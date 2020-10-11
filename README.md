@@ -19,6 +19,6 @@ Swagger is available after node app is started by the following path: http://loc
 In order to use enpoints, you need to login with help of Bearer token. Login button available in Swagger right up corner.
 In order to receive this token you need to send a request to Authorization endpoint by passing username and password parameters:
 
-Admin User Creds(All operations available): testadmin/testadminpassword
-Regular User Creds(Onlt get operations available): test/testpassword
+- Admin User Creds(All operations are available): <b>testadmin/testadminpassword</b>
+- Regular User Creds(Only GET operations are available): <b>test/testpassword</b>
 
