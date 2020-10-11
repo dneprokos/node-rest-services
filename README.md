@@ -1,6 +1,8 @@
 # node-rest-services
 Just a simple test project with RESTful services build with node
 
+![Swagger Image](/images/Swagger.png)  
+
 # Pre-requisitions
 1. Node Package Manager should be installed on your OS. Please find more detail here: https://www.npmjs.com/get-npm
 2. Git project is downloaded
