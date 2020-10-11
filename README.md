@@ -10,3 +10,13 @@ Just a simple test project with RESTful services build with node
 Run 'node index.js' in the Command Line. 
 
 Now you can use test endpoints
+
+# Swagger
+Swagger is available after node app is started by the following path: http://localhost:3000/api-docs/
+
+In order to use enpoints, you need to login with help of Bearer token. Login button available in Swagger right up corner.
+In order to receive this token you need to send a request to Authorization endpoint by passing username and password parameters:
+
+Admin User Creds(All operations available): testadmin/testadminpassword
+Regular User Creds(Onlt get operations available): test/testpassword
+
