@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: My Genres Project CRUD
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+
+host: localhost:3000
+
+paths:
+    /api/authorization:
+      post: 
+        summary: Get Authorization token by username and password
+        tags:
+            - Authorization
+        operationId: GetAuthenticationByNameAndPassword
+        parameters:
+            - in: query
+              name: username
+              schema:
+                type: string
+              description: Name of the user
+            - in: query
+              name: password
+              schema:
+                type: string
+              description: Password 
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AccessToken'
+          '404':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+    /api/genres:                
+      get:
+        summary: Get All genres
+        tags:
+            - Genres
+        operationId: GetAllGenres
+        security:
+          - bearerAuth: []
+        responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Genres'
+            '401':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Exception'
+      post:
+        summary: Creates new Genre
+        tags:
+            - Genres
+        operationId: CreateNewGenre
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenreCreateUpdate'
+              example:
+                name: 'Sci Fi'
+        responses:
+          '201':
+            description: Created
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Genre'
+          '401':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '403':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+    /api/genres/{id}:
+      parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Genre Id
+      get:
+        summary: Get Genre by Id
+        tags:
+          - Genres
+        operationId: CreateNewGenre 
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: Ok
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Genre'
+          '401':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '404':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+      put:
+        summary: Update Genre
+        tags:
+          - Genres
+        operationId: UpdateGenre
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenreCreateUpdate'
+              example:
+                name: 'Comedy'
+        responses:
+          '200':
+            description: Ok
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Genre'
+          '401':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '403':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '404':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+      delete:
+        summary: Delete Genre
+        tags:
+          - Genres
+        operationId: DeleteGenre
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: Ok
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Genre'
+          '401':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '403':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '404':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+                    
+components:
+    schemas:
+        Exception:
+            properties:
+              exception:
+                type: string
+        AccessToken:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                description: Bearer token
+        Genre:
+            type: object
+            properties:
+              id:
+                type: integer
+                uniqueItems: true
+              name:
+                type: string
+        GenreCreateUpdate:
+            type: object
+            properties:
+              name:
+                type: string
+                required: true
+        Genres:
+            type: array
+            items:
+              $ref: '#/components/schemas/Genre'
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT       
+        
+          
+  
