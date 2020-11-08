@@ -8,13 +8,30 @@ app.use(express.json());
 
 
 const swaggerUi = require('swagger-ui-express');
+const { parse } = require('yamljs');
 YAML = require('yamljs');
 swaggerDocument = YAML.load('./swagger.yml');
+
+// function limit(c){
+//   return this.filter((x,i)=>{
+//   if(i<=(c-1)){return true}
+//   })
+// }
+
+// function skip(c){
+//   return this.filter((x,i)=>{
+//   if(i>(c-1)){return true}
+//   })
+// }
+
+// Array.prototype.limit=limit;
+// Array.prototype.skip=skip;
 
 const genres = [
   { id: 1, name: 'Action' },  
   { id: 2, name: 'Horror' },  
-  { id: 3, name: 'Romance' }  
+  { id: 3, name: 'Romance' },
+  { id: 3, name: 'Test action' }   
 ];
 
 
@@ -115,11 +132,51 @@ app.delete('/api/genres/:id', authenticateJWT, (req, res) => {
   res.send(genre);
 });
 
+app.get('/api/genres/search', authenticateJWT, (req, res) => {
+  const { page = 1, limit = 10, name } = req.query;
+
+  const { error } = validatePageNumberAndLimit(req.query);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  let filteredGenres = genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
+  var pagedGenres = filterWithPageAndLimit(filteredGenres, page, limit);
+
+  res.send({
+    genres: pagedGenres,
+    pageNumber: Number(page),
+    pageLimit: Number(limit),
+    totalFound: filteredGenres.length
+  });
+});
+
+
 app.get('/api/genres/:id', authenticateJWT, (req, res) => {
   const genre = genres.find(c => c.id === parseInt(req.params.id));
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   res.send(genre);
 });
+
+function filterWithPageAndLimit(array, page, limit){
+  if (array.length === 0)
+    return array;
+  if (page === 1)
+    return array.slice(0, limit);
+  if (page > 0) {
+    let startIndex = (page - 1) * limit;
+    let endIndex = startIndex + limit;
+
+    return array.slice(startIndex, endIndex)
+  }
+}
+
+function validatePageNumberAndLimit(queryParams){
+  const schema = {
+    page: Joi.number().min(1).max(250),
+    limit: Joi.number().min(1).max(20)
+  }
+
+  return Joi.validate(queryParams, schema);
+}
 
 function validateGenre(genre) {
   const schema = {
@@ -138,6 +195,6 @@ function forbiddenIfNotAdminValidation(req, res){
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Listening on port ${port}...
 Swagger available by the following url: http://localhost:${port}/api-docs/`));

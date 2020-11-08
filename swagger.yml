@@ -4,7 +4,7 @@ info:
   description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
   version: 0.1.9
 
-host: localhost:3000
+host: localhost:4000
 
 paths:
     /api/authorization:
@@ -55,7 +55,7 @@ paths:
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/Exception'
+                    $ref: '#/components/schemas/Exception' 
       post:
         summary: Creates new Genre
         tags:
@@ -186,6 +186,42 @@ paths:
               application/json:
                 schema:
                     $ref: '#/components/schemas/Exception'
+    /api/genres/search:
+      get:
+        summary: Search Genre
+        tags:
+          - Genres
+        operationId: SearchGenre
+        security:
+          - bearerAuth: []
+        parameters:
+          - in: query
+            name: name
+            required: true
+            schema:
+              type: string
+            description: Genre name
+          - in: query
+            name: page
+            required: false
+            schema:
+              type: integer
+            description: Page number
+          - in: query
+            name: limit
+            required: false
+            schema:
+              type: integer
+            description: Page limit  
+        responses:
+          '200':
+            description: Ok
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/GenresSearchResponse'
+
+        
                     
 components:
     schemas:
@@ -217,6 +253,20 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Genre'
+        GenresSearchResponse:
+            type: object
+            properties:
+              genres:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genres'
+              pageNumber:
+                type: integer
+              pageLimit:
+                type: integer
+              totalFound:
+                type: integer
+
     securitySchemes:
       bearerAuth:
         type: http
