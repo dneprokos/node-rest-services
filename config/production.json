@@ -1,0 +1,6 @@
+{
+    "name": "Node REST services - Production",
+    "mail": {
+        "host": "prod-mail-server"
+    }
+}
