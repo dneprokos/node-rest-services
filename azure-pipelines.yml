@@ -10,7 +10,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation. Specified in Azure DevOps
-  azureSubscription: $(azureSubscription)
+  AZURE_SUBSCRIPTION: $(azureSubscription)
   
   # Web app name
   webAppName: 'Node Rest Services Training'
@@ -71,9 +71,10 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Azure Web App Deploy: '
             inputs:
-              azureSubscription: $azureSubscription
+              azureSubscription: $AZURE_SUBSCRIPTION
               appType: webAppLinux
               appName: $(webAppName)
               runtimeStack: 'NODE|10.10'
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
               startUpCommand: 'node index.js'
+              
