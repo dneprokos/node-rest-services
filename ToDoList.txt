@@ -1,0 +1,5 @@
+Next steps: 
+
+1. Move common methods to separate files (e.g authenticateJWT)
+2. Create POST, GET requests for Movies endpoint
+3. Introduce classes: e.g Movies, Genres

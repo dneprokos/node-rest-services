@@ -8,9 +8,16 @@ const genres = [
     { id: 1, name: 'Action' },  
     { id: 2, name: 'Horror' },  
     { id: 3, name: 'Romance' },
-    { id: 3, name: 'Test action' }   
+    { id: 4, name: 'Science Fiction' },
+    { id: 5, name: 'Disaster Film' },
+    { id: 6, name: 'Epic Romance' },  
+    { id: 7, name: 'Superhero Film' },
+    { id: 8, name: 'Space Western' },
+    { id: 9, name: 'Comedy' },
+    { id: 10, name: 'Adventure' }
 ];
 
+//TODO: Move it to separate place and re-use for Movies and Genres
 const accessTokenSecret = 'mysupersecretkey';
 
 const authenticateJWT = (req, res, next) => {
@@ -33,7 +40,7 @@ const authenticateJWT = (req, res, next) => {
 };
 
 //####Genres endpoints######
-router.get('/', authenticateJWT, (req, res) => {
+  router.get('/', authenticateJWT, (req, res) => {
     res.send(genres);
   });
   
@@ -79,14 +86,14 @@ router.get('/', authenticateJWT, (req, res) => {
   router.get('/search', authenticateJWT, (req, res) => {
     const { page = 1, limit = 10, name } = req.query;
   
-    const { error } = validatePageNumberAndLimit(req.query);
+    const { error } = validateSearchGenresQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
   
     let filteredGenres = genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
     var pagedGenres = filterWithPageAndLimit(filteredGenres, page, limit);
   
     res.send({
-      genres: pagedGenres,
+      data: pagedGenres,
       pageNumber: Number(page),
       pageLimit: Number(limit),
       totalFound: filteredGenres.length
@@ -109,15 +116,16 @@ router.get('/', authenticateJWT, (req, res) => {
       let startIndex = (page - 1) * limit;
       let endIndex = startIndex + limit;
   
-      return array.slice(startIndex, endIndex)
+      return array.slice(startIndex, endIndex);
     }
   }
   
-  function validatePageNumberAndLimit(queryParams){
+  function validateSearchGenresQueryParams(queryParams){
     const schema = {
       page: Joi.number().min(1).max(250),
-      limit: Joi.number().min(1).max(20)
-    }
+      limit: Joi.number().min(1).max(20),
+      name: Joi.string().required().min(3)
+    };
   
     return Joi.validate(queryParams, schema);
   }

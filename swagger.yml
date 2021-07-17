@@ -220,8 +220,47 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/GenresSearchResponse'
-
-        
+    /api/movies:                
+      get:
+        summary: Get movies with a filter
+        tags:
+            - Movies
+        operationId: GetFilteredMovies
+        security:
+          - bearerAuth: []
+        parameters:
+          - in: query
+            name: name
+            schema:
+              type: string
+            description: Movie name
+          - in: query
+            name: release_date
+            schema:
+              type: integer
+            description: Movie release year
+          - in: query
+            name: page
+            schema:
+              type: integer
+            description: Page number
+          - in: query
+            name: limit
+            schema:
+              type: integer
+            description: Page limit
+        responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/MoviesPagingResponse'
+            '401':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Exception'     
                     
 components:
     schemas:
@@ -256,7 +295,7 @@ components:
         GenresSearchResponse:
             type: object
             properties:
-              genres:
+              data:
                 type: array
                 items:
                   $ref: '#/components/schemas/Genres'
@@ -266,7 +305,37 @@ components:
                 type: integer
               totalFound:
                 type: integer
-
+        Movie:
+            type: object
+            properties:
+              id:
+                type: integer
+                uniqueItems: true
+              name:
+                type: string
+              release_date:
+                type: integer
+              genre_ids:
+                type: array
+                items:
+                  type: integer
+        Movies:
+            type: array
+            items:
+              $ref: '#/components/schemas/Movie'
+        MoviesPagingResponse:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movies'
+              pageNumber:
+                type: integer
+              pageLimit:
+                type: integer
+              totalFound:
+                type: integer
     securitySchemes:
       bearerAuth:
         type: http
