@@ -1,6 +1,7 @@
 const config = require('config');
 const express = require('express');
 const genres = require('./routes/genres');
+const movies = require('./routes/movies');
 const authorization = require('./routes/authorization');
 const app = express();
 const swagger = require('./swagger/swagger');
@@ -11,6 +12,7 @@ app.use(express.json());
 //Routes
 app.use('/api/authorization', authorization);
 app.use('/api/genres', genres);
+app.use('/api/movies', movies);
 
 //Swagger
 app.use('/api-docs', swagger);
