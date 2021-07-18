@@ -3,19 +3,22 @@ const express = require('express');
 const router = express.Router();
 const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
 const paging = require("../middlewares/paging");
+const Genre = require('../models/genre-model.js');
+const PagingResult = require("../models/paging-result-model");
 
 //TODO: Move it to db
 const genres = [
-    { id: 1, name: 'Action' },  
-    { id: 2, name: 'Horror' },  
-    { id: 3, name: 'Romance' },
-    { id: 4, name: 'Science Fiction' },
-    { id: 5, name: 'Disaster Film' },
-    { id: 6, name: 'Epic Romance' },  
-    { id: 7, name: 'Superhero Film' },
-    { id: 8, name: 'Space Western' },
-    { id: 9, name: 'Comedy' },
-    { id: 10, name: 'Adventure' }
+  new Genre(1, 'Action'),
+  new Genre(2, 'Horror'),
+  new Genre(3, 'Romance'),
+  new Genre(4, 'Science Fiction'),
+  new Genre(5, 'Disaster Film'),
+  new Genre(6, 'Epic Romance'),
+  new Genre(7, 'Superhero Film'),
+  new Genre(8, 'Space Western'),
+  new Genre(9, 'Comedy'),
+  new Genre(10, 'Adventure'),
+  new Genre(11, 'Western')
 ];
 
 //####Genres endpoints######
@@ -71,12 +74,7 @@ const genres = [
     let filteredGenres = genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
     var pagedGenres = paging.filterWithPageAndLimit(filteredGenres, page, limit);
   
-    res.send({
-      data: pagedGenres,
-      pageNumber: Number(page),
-      pageLimit: Number(limit),
-      totalFound: filteredGenres.length
-    });
+    res.send(new PagingResult(pagedGenres, Number(page), Number(limit), filteredGenres.length));
   });
   
   
