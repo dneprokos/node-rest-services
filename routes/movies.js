@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
+const paging = require("../middlewares/paging");
 
 const movies = [
     {id: 1, name: "The Matrix", release_date: 1999, genre_ids: [1, 4]},
@@ -11,37 +12,15 @@ const movies = [
     {id: 5, name: "The Mummy", release_date: 1999, genre_ids: [9, 10, 1, 2]}
 ]
 
-//TODO: Move it to separate place and re-use for Movies and Genres
-const accessTokenSecret = 'mysupersecretkey';
-
-const authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-  
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-  
-        jwt.verify(token, accessTokenSecret, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-  
-            req.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-};
-
 //####Movies endpoints######
-router.get('/', authenticateJWT, (req, res) => {
+router.get('/', jwtTokenValidation, (req, res) => {
     const { name, release_date, page = 1, limit = 10 } = req.query;
   
     const { error } = validateMoviesQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
 
     let filteredMovies = filterMovies(movies, req.query);
-    var pagedMovies = filterWithPageAndLimit(filteredMovies, page, limit);
+    var pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
     res.send({
         data: pagedMovies,
@@ -81,19 +60,6 @@ function validateMoviesQueryParams(queryParams){
     };
   
     return Joi.validate(queryParams, schema);
-}
-
-function filterWithPageAndLimit(array, page, limit){
-    if (array.length === 0)
-      return array;
-    if (page === 1)
-      return array.slice(0, limit);
-    if (page > 0) {
-      let startIndex = (page - 1) * limit;
-      let endIndex = startIndex + limit;
-  
-      return array.slice(startIndex, endIndex);
-    }
 }
 
 module.exports = router;

@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
+const paging = require("../middlewares/paging");
 
 //TODO: Move it to db
 const genres = [
@@ -17,34 +18,12 @@ const genres = [
     { id: 10, name: 'Adventure' }
 ];
 
-//TODO: Move it to separate place and re-use for Movies and Genres
-const accessTokenSecret = 'mysupersecretkey';
-
-const authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-  
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-  
-        jwt.verify(token, accessTokenSecret, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-  
-            req.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-};
-
 //####Genres endpoints######
-  router.get('/', authenticateJWT, (req, res) => {
+  router.get('/', jwtTokenValidation, (req, res) => {
     res.send(genres);
   });
   
-  router.post('/', authenticateJWT, (req, res) => {
+  router.post('/', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
   
     const { error } = validateGenre(req.body);
@@ -58,7 +37,7 @@ const authenticateJWT = (req, res, next) => {
     res.sendStatus(201).send(genre);
   });
   
-  router.put('/:id', authenticateJWT, (req, res) => {
+  router.put('/:id', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
   
     const genre = genres.find(c => c.id === parseInt(req.params.id));
@@ -71,7 +50,7 @@ const authenticateJWT = (req, res, next) => {
     res.send(genre);
   });
   
-  router.delete('/:id', authenticateJWT, (req, res) => {
+  router.delete('/:id', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
   
     const genre = genres.find(c => c.id === parseInt(req.params.id));
@@ -83,14 +62,14 @@ const authenticateJWT = (req, res, next) => {
     res.send(genre);
   });
   
-  router.get('/search', authenticateJWT, (req, res) => {
+  router.get('/search', jwtTokenValidation, (req, res) => {
     const { page = 1, limit = 10, name } = req.query;
   
     const { error } = validateSearchGenresQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
   
     let filteredGenres = genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
-    var pagedGenres = filterWithPageAndLimit(filteredGenres, page, limit);
+    var pagedGenres = paging.filterWithPageAndLimit(filteredGenres, page, limit);
   
     res.send({
       data: pagedGenres,
@@ -101,25 +80,12 @@ const authenticateJWT = (req, res, next) => {
   });
   
   
-  router.get('/:id', authenticateJWT, (req, res) => {
+  router.get('/:id', jwtTokenValidation, (req, res) => {
     const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
     res.send(genre);
   });
-  
-  function filterWithPageAndLimit(array, page, limit){
-    if (array.length === 0)
-      return array;
-    if (page === 1)
-      return array.slice(0, limit);
-    if (page > 0) {
-      let startIndex = (page - 1) * limit;
-      let endIndex = startIndex + limit;
-  
-      return array.slice(startIndex, endIndex);
-    }
-  }
-  
+    
   function validateSearchGenresQueryParams(queryParams){
     const schema = {
       page: Joi.number().min(1).max(250),
@@ -138,12 +104,5 @@ const authenticateJWT = (req, res, next) => {
     return Joi.validate(genre, schema);
   }
   
-  function forbiddenIfNotAdminValidation(req, res){
-    const { role } = req.user;
-    if (role !== 'admin') {
-      return res.sendStatus(403).send('User role should be Admin');
-    }
-  }
-
 module.exports = router;
  
