@@ -16,7 +16,7 @@ const movies = [
 
 //####Movies endpoints######
 router.get('/', jwtTokenValidation, (req, res) => {
-    const { name, release_date, page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
   
     const { error } = validateMoviesQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
@@ -25,6 +25,20 @@ router.get('/', jwtTokenValidation, (req, res) => {
     var pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
     res.send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
+});
+
+router.get('/:id', jwtTokenValidation, (req, res) => {
+    const movie = movies.find(c => c.id === parseInt(req.params.id));
+    if (!movie) return res.status(404).send('The movie with the given ID was not found.');
+    res.send(movie);
+});
+
+router.post('/', jwtTokenValidation, (req, res) => {
+    forbiddenIfNotAdminValidation(req, res);
+
+    const newMovie = new Movie (movies.length + 1, req.body.name, req.body.release_date, req.body.genre_ids);
+    movies.push(newMovie);
+    res.sendStatus(201).send(newMovie);
 });
 
 
