@@ -3,13 +3,15 @@ const express = require('express');
 const router = express.Router();
 const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
 const paging = require("../middlewares/paging");
+const Movie = require("../models/movie-model");
+const PagingResult = require("../models/paging-result-model");
 
 const movies = [
-    {id: 1, name: "The Matrix", release_date: 1999, genre_ids: [1, 4]},
-    {id: 2, name: "Titanic", release_date: 1997, genre_ids: [5, 6]},
-    {id: 3, name: "The Avengers", release_date: 2012, genre_ids: [7]},
-    {id: 4, name: "Serenity", release_date: 2005, genre_ids: [8]},
-    {id: 5, name: "The Mummy", release_date: 1999, genre_ids: [9, 10, 1, 2]}
+    new Movie(1, "The Matrix", 1999, [1, 4]),
+    new Movie(2, "Titanic", 1997, [5, 6]),
+    new Movie(3, "The Avengers", 2012, [7]),
+    new Movie(4, "Serenity", 2005, [8]),
+    new Movie(5, "The Mummy", 1999, [9, 10, 1, 2])
 ]
 
 //####Movies endpoints######
@@ -22,12 +24,7 @@ router.get('/', jwtTokenValidation, (req, res) => {
     let filteredMovies = filterMovies(movies, req.query);
     var pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
-    res.send({
-        data: pagedMovies,
-        pageNumber: Number(page),
-        pageLimit: Number(limit),
-        totalFound: filteredMovies.length
-      });
+    res.send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
 });
 
 
