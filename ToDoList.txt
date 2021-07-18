@@ -1,5 +1,4 @@
 Next steps: 
 
 1. Create POST, GET requests for Movies endpoint
-2. Validate Movie and Genre classes parameters
-3. Add docker-compose file
+2. Add docker-compose file
