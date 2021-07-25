@@ -326,6 +326,11 @@ paths:
             content:
               application/json:
                 schema:
+                    $ref: '#/components/schemas/Exception'
+          '400':
+            content:
+              application/json:
+                schema:
                     $ref: '#/components/schemas/Exception'                
 components:
     schemas:
