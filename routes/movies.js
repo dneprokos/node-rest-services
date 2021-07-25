@@ -36,6 +36,9 @@ router.get('/:id', jwtTokenValidation, (req, res) => {
 router.post('/', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
 
+    const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
+    if (error) res.sendStatus(400).send(error.details[0].message);
+
     const newMovie = new Movie (movies.length + 1, req.body.name, req.body.release_date, req.body.genre_ids);
     movies.push(newMovie);
     res.sendStatus(201).send(newMovie);
@@ -71,6 +74,16 @@ function validateMoviesQueryParams(queryParams){
     };
   
     return Joi.validate(queryParams, schema);
+}
+
+function validateProperties(name, release_date, genre_ids) {
+    const schema = {
+        name: Joi.string().required().min(3),
+        release_date: Joi.number().min(1930).optional().allow(null),
+        genre_ids: Joi.array().items(Joi.number()).optional().allow(null)
+    };
+
+    return Joi.validate({name, release_date, genre_ids}, schema);
 }
 
 module.exports = router;

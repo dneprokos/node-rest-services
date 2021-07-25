@@ -1,6 +1,6 @@
 Next steps: 
 
-1. Fix a bug for POST /movies - Error when try to create without optional fields - release_date, genre_ids
+1. Fix return of the custom text message instead of BadRequest
 2. Re-work Id assigment during Movie and Genre creation
 3. Use Genre class during Genre create and update operations
 4. Add Movie Delete and Update operations
