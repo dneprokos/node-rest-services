@@ -24,26 +24,37 @@ router.get('/', jwtTokenValidation, (req, res) => {
     let filteredMovies = filterMovies(movies, req.query);
     var pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
-    res.send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
+    res.status(200).send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
 });
 
 router.get('/:id', jwtTokenValidation, (req, res) => {
     const movie = movies.find(c => c.id === parseInt(req.params.id));
     if (!movie) return res.status(404).send('The movie with the given ID was not found.');
-    res.send(movie);
+    res.status(200).send(movie);
 });
 
 router.post('/', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
 
     const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
-    if (error) res.sendStatus(400).send(error.details[0].message);
+    if (error) res.status(400).send(error.details[0].message);
 
     const newMovie = new Movie (movies.length + 1, req.body.name, req.body.release_date, req.body.genre_ids);
     movies.push(newMovie);
-    res.sendStatus(201).send(newMovie);
+    res.status(201).json(newMovie);
 });
 
+router.delete('/:id', jwtTokenValidation, (req, res) => {
+    forbiddenIfNotAdminValidation(req, res);
+
+    const movie = movies.find(c => c.id === parseInt(req.params.id));
+    if (!movie) return res.status(404).send('The movie with the given ID was not found.');
+
+    const index = movies.indexOf(movie);
+    movies.splice(index, 1);
+  
+    res.send(204);
+});
 
 //Helper methods
 function filterMovies(movies, query) {

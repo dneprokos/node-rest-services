@@ -1,0 +1,8 @@
+version: "3"
+services:
+  moviesrestapi:
+    container_name: moviesrestapi
+    build: .
+    image: dneprokos/moviesrestapi
+    ports:               
+      - "3000:3000"
