@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: My Genres Project CRUD
+  title: Movies microservice API
   description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
-  version: 0.1.9
+  version: 0.2.0
 
 host: localhost:4000
 
@@ -300,6 +300,11 @@ paths:
               type: integer
             description: Movie release year
           - in: query
+            name: genre_ids
+            schema:
+              type: string
+            description: Comma-separated genre IDs
+          - in: query
             name: page
             schema:
               type: integer
@@ -397,11 +402,11 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/Genres'
-              pageNumber:
+              page_number:
                 type: integer
-              pageLimit:
+              page_limit:
                 type: integer
-              totalFound:
+              total_results:
                 type: integer
         Movie:
             type: object
@@ -439,11 +444,11 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/Movies'
-              pageNumber:
+              page_number:
                 type: integer
-              pageLimit:
+              page_limit:
                 type: integer
-              totalFound:
+              total_results:
                 type: integer
     securitySchemes:
       bearerAuth:

@@ -4,7 +4,7 @@ const accessTokenSecret = 'mysupersecretkey';
 function forbiddenIfNotAdminValidation(req, res){
     const { role } = req.user;
     if (role !== 'admin') {
-      return res.sendStatus(403).send('User role should be Admin');
+      return res.status(403).send('Your user role cannot perform this operation');
     }
 }
 function jwtTokenValidation(req, res, next) {
