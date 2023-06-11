@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
       const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret);
       res.json({ accessToken });
   } else {
-      res.sendStatus(404).send(error.details[0].message);
+      res.status(404).send(error.details[0].message);
   }
 });
 
