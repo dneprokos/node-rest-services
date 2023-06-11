@@ -58,22 +58,17 @@ router.delete('/:id', jwtTokenValidation, (req, res) => {
 
 //Helper methods
 function filterMovies(movies, query) {
-    const { name, release_date} = query;
+    const { name, release_date } = query;
 
-    if (name != undefined && release_date != undefined) {
-        return movies.filter(c => 
-                c.name.toLowerCase().includes(name.toLowerCase()) 
-                && c.release_date == release_date);
-    }         
-    else if (name == undefined && release_date == undefined) {
-        return movies;
-    }    
-    else if (name == undefined) {
-        return movies.filter(c => c.release_date == release_date)
-    }
-    else if (release_date == undefined) {
-        return movies.filter(c.name.toLowerCase().includes(name.toLowerCase()))
-    }
+  if (name !== undefined && release_date !== undefined) {
+    return movies.filter(c => c.name.toLowerCase().includes(name.toLowerCase()) && c.release_date == release_date);
+  } else if (name === undefined && release_date === undefined) {
+    return movies;
+  } else if (name === undefined) {
+    return movies.filter(c => c.release_date == release_date);
+  } else if (release_date === undefined) {
+    return movies.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
+  }
 }
 
 function validateMoviesQueryParams(queryParams){
