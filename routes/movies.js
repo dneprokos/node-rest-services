@@ -21,8 +21,8 @@ router.get('/', jwtTokenValidation, (req, res) => {
     const { error } = validateMoviesQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let filteredMovies = filterMovies(movies, req.query);
-    var pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
+    const filteredMovies = filterMovies(movies, req.query);
+    const pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
     res.status(200).send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
 });
@@ -58,17 +58,18 @@ router.delete('/:id', jwtTokenValidation, (req, res) => {
 
 //Helper methods
 function filterMovies(movies, query) {
-    const { name, release_date } = query;
+  const { name, release_date, genre_ids } = query;
 
-  if (name !== undefined && release_date !== undefined) {
-    return movies.filter(c => c.name.toLowerCase().includes(name.toLowerCase()) && c.release_date == release_date);
-  } else if (name === undefined && release_date === undefined) {
-    return movies;
-  } else if (name === undefined) {
-    return movies.filter(c => c.release_date == release_date);
-  } else if (release_date === undefined) {
-    return movies.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
-  }
+  return movies.filter(movie => {
+    const lowercaseName = name ? name.toLowerCase() : null;
+    const lowercaseMovieName = movie.name.toLowerCase();
+
+    const matchesName = !name || lowercaseMovieName.includes(lowercaseName);
+    const matchesReleaseDate = !release_date || movie.release_date == release_date;
+    const matchesGenreIds = !genre_ids || genre_ids.split(',').map(id => parseInt(id.trim())).some(genreId => movie.genre_ids.includes(genreId));
+
+    return matchesName && matchesReleaseDate && matchesGenreIds;
+  });
 }
 
 function validateMoviesQueryParams(queryParams){
@@ -76,7 +77,8 @@ function validateMoviesQueryParams(queryParams){
       page: Joi.number().min(1).max(250),
       limit: Joi.number().min(1).max(20),
       name: Joi.string().min(3).optional(),
-      release_date: Joi.number().min(1930).optional()
+      release_date: Joi.number().min(1930).optional(),
+      genre_ids: Joi.string().regex(/^\d+(,\d+)*$/).optional()
     };
   
     return Joi.validate(queryParams, schema);
