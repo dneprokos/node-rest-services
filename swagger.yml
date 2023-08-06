@@ -36,6 +36,26 @@ paths:
               application/json:
                 schema:
                     $ref: '#/components/schemas/Exception'
+    /api/users:
+      get:
+        summary: Get All users
+        tags:
+            - Users
+        operationId: GetAllUsers
+        security:
+          - bearerAuth: []
+        responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Users'
+            '401':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Exception' 
     /api/genres:                
       get:
         summary: Get All genres
@@ -454,6 +474,26 @@ components:
                 type: integer
               total_results:
                 type: integer
+        User:
+            type: object
+            properties:
+              id:
+                type: integer
+                uniqueItems: true
+              username:
+                type: string
+              password:
+                type: string
+              role:
+                type: string
+        Users:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        
     securitySchemes:
       bearerAuth:
         type: http
