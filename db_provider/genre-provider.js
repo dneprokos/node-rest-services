@@ -17,35 +17,40 @@ const genresData = [
 class GenreProvider {
     constructor() {}
 
-    getAllGenres() {
+    async getAllGenres() {
       return genresData;
     }
 
-    getGenreById(genreId) {
+    async getGenreById(genreId) {
       return genresData.find(genre => genre.id === genreId);
     }
 
-    addGenre(genre) {
+    async addGenre(genre) {
       genre.id = genresData.length + 1;
       genresData.push(genre);
       return genre;
     }
 
-    updateGenre(genre) {
+    async updateGenre(genre) {
         const index = genresData.findIndex(g => g.id === genre.id);
         genresData.splice(index, 1, new Genre(genre.id, genre.name));
         return genre;
     }
 
-    deleteGenre(genreId) {
+    async deleteGenre(genreId) {
         const index = genresData.findIndex(g => g.id === genreId);
         genresData.splice(index, 1);
     }
 
-    searchGenresByName(name) {
+    async searchGenresByName(name) {
         return genresData.filter(genre =>
           genre.name.toLowerCase().includes(name.toLowerCase())
         );
+    }
+
+    async getInvalidGenreIds(genreIds) {
+        const existingGenreIds = genresData.map(genre => genre.id);
+        return genreIds.filter(genreId => !existingGenreIds.includes(genreId));
     }
 }
 

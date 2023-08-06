@@ -11,32 +11,32 @@ const movies = [
 class MoviesProvider {
     constructor() {}
 
-    getAllMovies() {
+    async getAllMovies() {
       return movies;
     }
 
-    getMovieById(movieId) {
+    async getMovieById(movieId) {
       return movies.find(movie => movie.id === movieId);
     }
 
-    addMovie(movie) {
+    async addMovie(movie) {
       movie.id = movies.length + 1;
       movies.push(movie);
       return movie;
     }
 
-    updateMovie(movie) {
+    async updateMovie(movie) {
         const index = movies.findIndex(m => m.id === movie.id);
         movies.splice(index, 1, new Movie(movie.id, movie.name, movie.year, movie.genreIds));
         return movie;
     }
 
-    deleteMovie(movieId) {
+    async deleteMovie(movieId) {
         const index = movies.findIndex(m => m.id === movieId);
         movies.splice(index, 1);
     }
 
-    searchMoviesByName(name) {
+    async searchMoviesByName(name) {
         return movies.filter(movie =>
           movie.name.toLowerCase().includes(name.toLowerCase())
         );

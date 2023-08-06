@@ -5,61 +5,57 @@ const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewa
 const paging = require("../middlewares/paging");
 const Movie = require("../models/movie-model");
 const PagingResult = require("../models/paging-result-model");
-const genres = require('./genres'); 
-
-const movies = [
-    new Movie(1, "The Matrix", 1999, [1, 4]),
-    new Movie(2, "Titanic", 1997, [5, 6]),
-    new Movie(3, "The Avengers", 2012, [7]),
-    new Movie(4, "Serenity", 2005, [8]),
-    new Movie(5, "The Mummy", 1999, [9, 10, 1, 2])
-]
+const MoviesProvider = require('../db_provider/movies-provider'); // Import the MoviesProvider class
+const moviesProvider = new MoviesProvider(); // Create an instance of the MoviesProvider class
+const GenreProvider = require('../db_provider/genre-provider.js');
+const genreProvider = new GenreProvider();
 
 //####Movies endpoints######
-router.get('/', jwtTokenValidation, (req, res) => {
+router.get('/', jwtTokenValidation, async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
   
     const { error } = validateMoviesQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const filteredMovies = filterMovies(movies, req.query);
+    const allMovies = await moviesProvider.getAllMovies(); //TODO:  This is not the best way to do this.  We should be using a database.
+    const filteredMovies = filterMovies(allMovies, req.query);
     const pagedMovies = paging.filterWithPageAndLimit(filteredMovies, page, limit);
 
     res.status(200).send(new PagingResult(pagedMovies, Number(page), Number(limit), filteredMovies.length));
 });
 
-router.get('/:id', jwtTokenValidation, (req, res) => {
-    const movie = movies.find(c => c.id === parseInt(req.params.id));
+router.get('/:id', jwtTokenValidation, async (req, res) => {
+    const movie = await moviesProvider.getMovieById(parseInt(req.params.id)); 
     if (!movie) return res.status(404).send('The movie with the given ID was not found.');
     res.status(200).send(movie);
 });
 
-router.post('/', jwtTokenValidation, (req, res) => {
+router.post('/', jwtTokenValidation, async (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
 
+    // Validate the request body
     const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
     if (error) res.status(400).send(error.details[0].message);
 
-    // Validate genre_ids using the function from genres.js
-    if (!genres.areGenreIdsValid(req.body.genre_ids)) {
-        return res.status(400).send('Invalid genre_ids provided.');
+    // Validate genre_ids using genre-provider
+    const invalidGenreIds = await genreProvider.getInvalidGenreIds(req.body.genre_ids);
+    if (invalidGenreIds.length > 0) {
+      return res.status(400).json({ message: 'Invalid genre_ids provided.', invalidGenreIds });
     }
 
-    const newMovie = new Movie (movies.length + 1, req.body.name, req.body.release_date, req.body.genre_ids);
-    movies.push(newMovie);
-    res.status(201).json(newMovie);
+    const movie = new Movie (0, req.body.name, req.body.release_date, req.body.genre_ids);
+    const newMovie = await moviesProvider.addMovie(movie);
+    res.status(201).json(newMovie).send();
 });
 
-router.delete('/:id', jwtTokenValidation, (req, res) => {
+router.delete('/:id', jwtTokenValidation, async (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
 
-    const movie = movies.find(c => c.id === parseInt(req.params.id));
+    const movie = await moviesProvider.getMovieById(parseInt(req.params.id));
     if (!movie) return res.status(404).send('The movie with the given ID was not found.');
 
-    const index = movies.indexOf(movie);
-    movies.splice(index, 1);
-  
-    res.send(204);
+    moviesProvider.deleteMovie(parseInt(req.params.id));
+    res.status(204).send();
 });
 
 //Helper methods

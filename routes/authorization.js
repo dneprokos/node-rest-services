@@ -16,7 +16,7 @@ const users = [
   }
 ];
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // Read username and password from request body
   const { username, password } = req.query;
 
