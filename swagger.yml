@@ -18,12 +18,12 @@ paths:
               name: username
               schema:
                 type: string
-              description: Name of the user
+              description: Name of the user (Read-only - "test", Admin - "testadmin")
             - in: query
               name: password
               schema:
                 type: string
-              description: Password 
+              description: Password (Name of the user (Read-only - "testpassword", Admin - "testadminpassword"))
         responses:
           '200':
             description: OK
@@ -36,6 +36,26 @@ paths:
               application/json:
                 schema:
                     $ref: '#/components/schemas/Exception'
+    /api/users:
+      get:
+        summary: Get All users
+        tags:
+            - Users
+        operationId: GetAllUsers
+        security:
+          - bearerAuth: []
+        responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Users'
+            '401':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Exception' 
     /api/genres:                
       get:
         summary: Get All genres
@@ -391,6 +411,7 @@ components:
               name:
                 type: string
                 required: true
+                description: "Name of the genre. (Min: 3 symbols)"
         Genres:
             type: array
             items:
@@ -431,12 +452,15 @@ components:
             properties:
               name:
                 type: string
+                description: "Movie name. (Min: 3 symbols)"
               release_date:
                 type: integer
+                description: "Movie release year. (Min: 1930)"
               genre_ids:
                 type: array
                 items:
-                  type: integer 
+                  type: integer
+                description: "Comma-separated genre IDs. (Should be valid IDs)"
         MoviesPagingResponse:
             type: object
             properties:
@@ -450,6 +474,26 @@ components:
                 type: integer
               total_results:
                 type: integer
+        User:
+            type: object
+            properties:
+              id:
+                type: integer
+                uniqueItems: true
+              username:
+                type: string
+              password:
+                type: string
+              role:
+                type: string
+        Users:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        
     securitySchemes:
       bearerAuth:
         type: http
