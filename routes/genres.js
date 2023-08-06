@@ -3,26 +3,13 @@ const express = require('express');
 const router = express.Router();
 const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
 const paging = require("../middlewares/paging");
-const Genre = require('../models/genre-model.js');
 const PagingResult = require("../models/paging-result-model");
-
-//TODO: Move it to db
-const genres = [
-  new Genre(1, 'Action'),
-  new Genre(2, 'Horror'),
-  new Genre(3, 'Romance'),
-  new Genre(4, 'Science Fiction'),
-  new Genre(5, 'Disaster Film'),
-  new Genre(6, 'Epic Romance'),
-  new Genre(7, 'Superhero Film'),
-  new Genre(8, 'Space Western'),
-  new Genre(9, 'Comedy'),
-  new Genre(10, 'Adventure'),
-  new Genre(11, 'Western')
-];
+const GenreProvider = require('../db_provider/genre-provider.js');
+const genreProvider = new GenreProvider(); // Create an instance of the GenreProvider class
 
 //####Genres endpoints######
   router.get('/', jwtTokenValidation, (req, res) => {
+    const genres = genreProvider.getAllGenres();
     res.send(genres);
   });
   
@@ -34,35 +21,40 @@ const genres = [
       return res.status(400).send(error.details[0].message);
   
     const genre = {
-      id: genres.length + 1,
+      // id: genres.length + 1,
       name: req.body.name
     };
-    genres.push(genre);
-    res.status(201).json(genre);
+
+    const newGenre = genreProvider.addGenre(genre);
+    //genres.push(genre);
+    res.status(201).json(newGenre);
   });
   
   router.put('/:id', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
-  
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
+
+    // Look up the genre
+    const genreId = parseInt(req.params.id);
+    const genre = genreProvider.getGenreById(genreId);
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
-  
+
+    // Validate the genre
     const { error } = validateGenre(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
-    
-    genre.name = req.body.name; 
-    res.status(200).json(genre);
+
+    // Update the genre
+    const updatedGenre = genreProvider.updateGenre(req.body);
+    res.status(200).json(updatedGenre);
   });
   
   router.delete('/:id', jwtTokenValidation, (req, res) => {
     forbiddenIfNotAdminValidation(req, res);
   
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
+    const genreId = parseInt(req.params.id);
+    const genre = genreProvider.getGenreById(genreId);
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   
-    const index = genres.indexOf(genre);
-    genres.splice(index, 1);
-  
+    genreProvider.deleteGenre(genreId);  
     res.send(204);
   });
   
@@ -72,7 +64,7 @@ const genres = [
     const { error } = validateSearchGenresQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
   
-    let filteredGenres = genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
+    let filteredGenres = genreProvider.searchGenresByName(name); //genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
     var pagedGenres = paging.filterWithPageAndLimit(filteredGenres, page, limit);
   
     res.status(200).send(new PagingResult(pagedGenres, Number(page), Number(limit), filteredGenres.length));
@@ -80,7 +72,8 @@ const genres = [
   
   
   router.get('/:id', jwtTokenValidation, (req, res) => {
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
+    const genreId = parseInt(req.params.id);
+    const genre = genreProvider.getGenreById(genreId);
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
     res.status(200).send(genre);
   });

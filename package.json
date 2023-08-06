@@ -22,5 +22,8 @@
     "open": "^8.2.1",
     "swagger-ui-express": "^4.1.4",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.46.0"
   }
 }

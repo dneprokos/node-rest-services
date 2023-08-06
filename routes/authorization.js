@@ -20,15 +20,20 @@ router.post('/', (req, res) => {
   // Read username and password from request body
   const { username, password } = req.query;
 
-  // Filter user from the users array by username and password
-  const user = users.find(u => { return u.username === username && u.password === password });
+  try {
+    // Filter user from the users array by username and password
+    const user = users.find(u => u.username === username && u.password === password);
 
-  if (user) {
+    if (user) {
       // Generate an access token
-      const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret);
+      const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret);
       res.json({ accessToken });
-  } else {
-      res.status(404).send(error.details[0].message);
+    } else {
+      res.status(404).send('Invalid credentials.');
+    }
+  } catch (error) {
+    // Handle any errors that might occur during user search
+    res.status(500).send('Internal server error.');
   }
 });
 

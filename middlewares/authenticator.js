@@ -24,6 +24,6 @@ function jwtTokenValidation(req, res, next) {
     } else {
         res.sendStatus(401);
     }
-};
+}
 
 module.exports = { forbiddenIfNotAdminValidation, jwtTokenValidation }

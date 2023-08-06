@@ -5,6 +5,7 @@ const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewa
 const paging = require("../middlewares/paging");
 const Movie = require("../models/movie-model");
 const PagingResult = require("../models/paging-result-model");
+const genres = require('./genres'); 
 
 const movies = [
     new Movie(1, "The Matrix", 1999, [1, 4]),
@@ -38,6 +39,11 @@ router.post('/', jwtTokenValidation, (req, res) => {
 
     const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
     if (error) res.status(400).send(error.details[0].message);
+
+    // Validate genre_ids using the function from genres.js
+    if (!genres.areGenreIdsValid(req.body.genre_ids)) {
+        return res.status(400).send('Invalid genre_ids provided.');
+    }
 
     const newMovie = new Movie (movies.length + 1, req.body.name, req.body.release_date, req.body.genre_ids);
     movies.push(newMovie);
