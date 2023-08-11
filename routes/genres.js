@@ -64,7 +64,7 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     const { error } = validateSearchGenresQueryParams(req.query);
     if (error) return res.status(400).send(error.details[0].message);
   
-    let filteredGenres = await genreProvider.searchGenresByName(name); //genres.filter(c => c.name.toLowerCase().includes(name.toLowerCase()));
+    let filteredGenres = await genreProvider.searchGenresByName(name);
     var pagedGenres = paging.filterWithPageAndLimit(filteredGenres, page, limit);
   
     res.status(200).send(new PagingResult(pagedGenres, Number(page), Number(limit), filteredGenres.length));
@@ -82,7 +82,7 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     const schema = {
       page: Joi.number().min(1).max(250),
       limit: Joi.number().min(1).max(20),
-      name: Joi.string().required().min(3)
+      //name: Joi.string().required().min(3)
     };
   
     return Joi.validate(queryParams, schema);

@@ -55,7 +55,12 @@ paths:
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/Exception' 
+                    $ref: '#/components/schemas/Exception'
+            '403':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Exception'
     /api/genres:                
       get:
         summary: Get All genres
@@ -98,6 +103,11 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Genre'
+          '400':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
           '401':
             content:
               application/json:
@@ -145,6 +155,13 @@ paths:
         tags:
           - Genres
         operationId: UpdateGenre
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Genre Id 
         security:
           - bearerAuth: []
         requestBody:
@@ -162,6 +179,11 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Genre'
+          '400':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
           '401':
             content:
               application/json:
@@ -182,6 +204,13 @@ paths:
         tags:
           - Genres
         operationId: DeleteGenre
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Genre Id 
         security:
           - bearerAuth: []
         responses:
@@ -213,7 +242,7 @@ paths:
         parameters:
           - in: query
             name: name
-            required: true
+            required: false
             schema:
               type: string
             description: Genre name
@@ -222,13 +251,16 @@ paths:
             required: false
             schema:
               type: integer
-            description: Page number
+              minimum: 1
+            description: Page number (Min - 1)
           - in: query
             name: limit
             required: false
             schema:
               type: integer
-            description: Page limit  
+              minimum: 1
+              maximum: 20
+            description: Page limit (Min - 1, Max - 20)
         responses:
           '200':
             description: Ok
@@ -341,6 +373,11 @@ paths:
                 application/json:
                   schema:
                     $ref: '#/components/schemas/MoviesPagingResponse'
+            '400':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
             '401':
               content:
                 application/json:
@@ -370,6 +407,11 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Movie'
+          '400':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
           '401':
             content:
               application/json:
@@ -379,12 +421,7 @@ paths:
             content:
               application/json:
                 schema:
-                    $ref: '#/components/schemas/Exception'
-          '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'                
+                    $ref: '#/components/schemas/Exception'                         
 components:
     schemas:
         Exception:
