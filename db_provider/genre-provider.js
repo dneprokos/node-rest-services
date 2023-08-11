@@ -43,9 +43,13 @@ class GenreProvider {
     }
 
     async searchGenresByName(name) {
-        return genresData.filter(genre =>
-          genre.name.toLowerCase().includes(name.toLowerCase())
-        );
+      if (!name || name.trim() === "") {
+        return genresData; // Return all genres
+      }
+
+      return genresData.filter(genre =>
+        genre.name.toLowerCase().includes(name.toLowerCase())
+      );
     }
 
     async getInvalidGenreIds(genreIds) {
