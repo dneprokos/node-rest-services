@@ -27,6 +27,22 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     //genres.push(genre);
     res.status(201).json(newGenre);
   });
+
+  router.post('/bulk', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
+    const genres = req.body;
+
+    // Validate the array of genres
+    const invalidIndices = validateGenres(genres);
+
+    if (invalidIndices.length > 0) {
+        const errorMessage = `Invalid genres at indices: ${invalidIndices.join(', ')}`;
+        return res.status(400).send(errorMessage);
+    }
+
+    // Add valid genres
+    const newGenres = await genreProvider.addGenres(genres);
+    res.status(201).json(newGenres);
+  });
   
   router.put('/:id', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
     // Look up the genre
@@ -89,6 +105,19 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
   
     return Joi.validate(genre, schema);
   }
+
+  function validateGenres(genres) {
+    const schema = {
+        name: Joi.string().min(3).required()
+    };
+
+    const results = genres.map((genre, index) => {
+        const { error } = Joi.validate(genre, schema);
+        return error ? index : null;
+    });
+
+    return results.filter(index => index !== null);
+}
   
 module.exports = router;
  

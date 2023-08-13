@@ -118,6 +118,49 @@ paths:
               application/json:
                 schema:
                     $ref: '#/components/schemas/Exception'
+    /api/genres/bulk:
+      post:
+        summary: Creates new Genres in bulk
+        tags:
+            - Genres
+        operationId: CreateNewGenresInBulk
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenreCreateUpdate'
+              example:
+                - name: 'Sci Fi'
+                - name: 'Comedy'
+        responses:
+          '201':
+            description: Created
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Genre'
+          '400':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '401':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
+          '403':
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Exception'
     /api/genres/{id}:
       get:
         summary: Get Genre by Id

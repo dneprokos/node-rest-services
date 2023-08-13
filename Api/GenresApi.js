@@ -68,6 +68,36 @@ class GenresApi extends BaseApi {
     }
 
     /**
+     * @description Create multiple genres. POST /api/genres
+     * @param {Array} genres
+     * @returns {Promise<Array>}
+     * @example
+     * [
+     * {
+     * "name": "Action"
+     * },
+     * {
+     * "name": "Horror"
+     * }
+     * ]
+     * 
+    */
+    async createGenres(genres, authToken) {
+        const response = await this.instance.post(
+            `genres/bulk`,
+            genres,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${authToken}`
+                },
+            }
+        );
+
+        return response;
+    }
+
+    /**
      * @description Update a genre. PUT /api/genres/:id
      * @param {number} id
      * @param {Object} genre
@@ -124,7 +154,7 @@ class GenresApi extends BaseApi {
      * "limit": 10
      * }
      */
-    async searchGenres(queryParams, authToken) {
+    async searchGenres(queryParams = {}, authToken) {
         const response = await this.instance.get(
             `genres/search`,
             {
