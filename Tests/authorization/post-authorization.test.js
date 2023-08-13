@@ -2,14 +2,14 @@
 const { AuthorizationApi } = require('@api'); 
 const envConfig = require('@env');
 
-describe('POST - Authorization API Tests', () => {
+describe('POST /Authorization - Tests', () => {
     
     it('Send non-admin user auth-Non admin user token should be returned', async () => {
         //Arrange
 
         //Act
         const response = await new AuthorizationApi()
-            .getAuthToken(envConfig.regularUser, envConfig.regularPassword);
+            .generateAuthToken(envConfig.regularUser, envConfig.regularPassword);
         
         //Assert
         expect(response.status).toBe(200);
@@ -21,7 +21,7 @@ describe('POST - Authorization API Tests', () => {
 
         //Act
         const response = await new AuthorizationApi()
-            .getAuthToken(envConfig.adminUser, envConfig.adminPassword);
+            .generateAuthToken(envConfig.adminUser, envConfig.adminPassword);
         
         //Assert
         expect(response.status).toBe(200);
@@ -33,7 +33,7 @@ describe('POST - Authorization API Tests', () => {
 
         //Act
         const response = await new AuthorizationApi()
-            .getAuthToken("JonDou", "Password123");
+            .generateAuthToken("JonDou", "Password123");
         
         //Assert
         expect(response.status).toBe(404);

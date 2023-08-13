@@ -1,7 +1,7 @@
 const AuthorizationApi = require('./AuthorizationApi');
-// You can export other API classes here too
+const UsersApi = require('./UsersApi');
 
 module.exports = {
     AuthorizationApi,
-    // Export other API classes
+    UsersApi
 };

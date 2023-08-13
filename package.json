@@ -14,7 +14,9 @@
     ],
     "moduleNameMapper": {
       "^@env$": "<rootDir>/envConfig.js",
-      "^@api$": "<rootDir>/Api/index.js"
+      "^@api$": "<rootDir>/Api/index.js",
+      "^@testHelpers$": "<rootDir>/TestHelpers/index.js",
+      "^@models$": "<rootDir>/Models/index.js"
     }
   },
   "keywords": [],
