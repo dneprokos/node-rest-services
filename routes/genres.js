@@ -13,9 +13,7 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     res.send(genres);
   });
   
-  router.post('/', jwtTokenValidation, async (req, res) => {
-    forbiddenIfNotAdminValidation(req, res);
-  
+  router.post('/', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {  
     const { error } = validateGenre(req.body);
     if (error) 
       return res.status(400).send(error.details[0].message);
@@ -30,9 +28,7 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     res.status(201).json(newGenre);
   });
   
-  router.put('/:id', jwtTokenValidation, async (req, res) => {
-    forbiddenIfNotAdminValidation(req, res);
-
+  router.put('/:id', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
     // Look up the genre
     const genreId = parseInt(req.params.id);
     const genre = await genreProvider.getGenreById(genreId);
@@ -47,9 +43,7 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     res.status(200).json(updatedGenre);
   });
   
-  router.delete('/:id', jwtTokenValidation, async (req, res) => {
-    forbiddenIfNotAdminValidation(req, res);
-  
+  router.delete('/:id', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {  
     const genreId = parseInt(req.params.id);
     const genre = await genreProvider.getGenreById(genreId);
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');

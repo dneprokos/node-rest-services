@@ -1,4 +1,5 @@
 const User = require("../models/user-model");
+const { hashPassword } = require("../utils/passwordUtils");
 
 const users = [
     new User(1, "testadmin", "testadminpassword", "admin"),
@@ -6,10 +7,12 @@ const users = [
 ];
 
 class UsersProvider {
-    constructor() {}
-
     async getAllUsers() {
-      return users;
+        const hashedUsers = users.map(user => ({
+            ...user,
+            password: hashPassword(user.password)
+        }));
+        return hashedUsers;
     }
 
     async getUser(user) {

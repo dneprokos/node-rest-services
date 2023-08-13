@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
-const {forbiddenIfNotAdminValidation, jwtTokenValidation} = require("../middlewares/authenticator");
+const { forbiddenIfNotAdminValidation, jwtTokenValidation } = require("../middlewares/authenticator");
 const paging = require("../middlewares/paging");
 const Movie = require("../models/movie-model");
 const PagingResult = require("../models/paging-result-model");
@@ -30,9 +30,7 @@ router.get('/:id', jwtTokenValidation, async (req, res) => {
     res.status(200).send(movie);
 });
 
-router.post('/', jwtTokenValidation, async (req, res) => {
-    forbiddenIfNotAdminValidation(req, res);
-
+router.post('/', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
     // Validate the request body
     const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
     if (error) res.status(400).send(error.details[0].message);
@@ -48,9 +46,7 @@ router.post('/', jwtTokenValidation, async (req, res) => {
     res.status(201).json(newMovie).send();
 });
 
-router.delete('/:id', jwtTokenValidation, async (req, res) => {
-    forbiddenIfNotAdminValidation(req, res);
-
+router.delete('/:id', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
     const movie = await moviesProvider.getMovieById(parseInt(req.params.id));
     if (!movie) return res.status(404).send('The movie with the given ID was not found.');
 

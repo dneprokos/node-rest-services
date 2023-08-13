@@ -11,7 +11,7 @@ describe('GET /Users - Tests', () => {
         adminAccessToken = await TokenGenerator.generateAdminUserAccessToken(); // Generate the admin access token
     });
     
-    it.skip('Users wtih non-admin token - Should be forbidden', async () => {
+    it('Users wtih non-admin token - Should be forbidden', async () => {
         //Arrange
 
         //Act
@@ -28,13 +28,11 @@ describe('GET /Users - Tests', () => {
             {
               "id": 1,
               "username": "testadmin",
-              "password": "testadminpassword",
               "role": "admin"
             },
             {
               "id": 2,
               "username": "test",
-              "password": "testpassword",
               "role": "member"
             }
         ];
@@ -44,6 +42,11 @@ describe('GET /Users - Tests', () => {
         
         //Assert
         expect(response.status).toBe(200);
-        expect(response.data).toEqual(expectedUsers);
+        response.data.forEach(user => {
+            expect(user.password).toBeDefined(); // Check that the password field exists
+        });
+        // eslint-disable-next-line no-unused-vars
+        const usersWithoutPasswords = response.data.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+        expect(usersWithoutPasswords).toEqual(expect.arrayContaining(expectedUsers));
     });
 });
