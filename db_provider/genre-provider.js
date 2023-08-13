@@ -31,6 +31,28 @@ class GenreProvider {
       return genre;
     }
 
+    /**
+     * @description Add multiple genres
+     * @param {Array} genres
+     * @returns {Promise<Array>}
+     * @example
+     * [
+     * {
+     * "name": "Action"
+     * },
+     * {
+     * "name": "Horror"
+     * }
+     * ]
+    */
+    async addGenres(genres) {
+        genres.forEach(genre => {
+            genre.id = genresData.length + 1;
+            genresData.push(genre);
+        });
+        return genres;
+    }
+
     async updateGenre(genre) {
         const index = genresData.findIndex(g => g.id === genre.id);
         genresData.splice(index, 1, new Genre(genre.id, genre.name));

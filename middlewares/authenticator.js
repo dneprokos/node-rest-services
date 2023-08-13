@@ -1,8 +1,7 @@
-//const c = require('config');
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'mysupersecretkey';
 
-function jwtTokenValidation(req, res, next) {
+async function jwtTokenValidation(req, res, next) {
     const authHeader = req.headers.authorization;
   
     if (authHeader) {
@@ -22,13 +21,15 @@ function jwtTokenValidation(req, res, next) {
     }
 }
 
-function forbiddenIfNotAdminValidation(req, res){
+async function forbiddenIfNotAdminValidation(req, res, next) {
     const { role } = req.user;
     console.log(role);
 
     if (role !== 'admin') {
       return res.status(403).send('Your user role cannot perform this operation');
     }
+
+    next(); // Call next() to continue processing the request
 }
 
-module.exports = {jwtTokenValidation, forbiddenIfNotAdminValidation}
+module.exports = { jwtTokenValidation, forbiddenIfNotAdminValidation }
