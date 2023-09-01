@@ -9,7 +9,7 @@ class GenresApi extends BaseApi {
      * @description Get all genres. GET /api/genres
      * @returns {Promise<{genres: Array}>}
      */
-    async getGenres(authToken) {
+    async getGenres(x) {
         const response = await this.instance.get(
             `genres`,
             {

@@ -54,6 +54,9 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
     const { error } = validateGenre(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
+    // Ensure the "id" field in the request body matches the genreId
+    req.body.id = genreId;
+
     // Update the genre
     const updatedGenre = await genreProvider.updateGenre(req.body);
     res.status(200).json(updatedGenre);
