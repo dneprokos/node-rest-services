@@ -6,10 +6,10 @@ class MoviesApi extends BaseApi {
     }
 
     /**
-     * @description Get all movies. GET /api/movies
+     * @description Get all movies with filter. GET /api/movies
      * @returns {Promise<{movies: Array}>}
      */
-    async getMovies(authToken) {
+    async getMovies(authToken, queryParams = {}) {
         const response = await this.instance.get(
             `movies`,
             {
@@ -17,6 +17,8 @@ class MoviesApi extends BaseApi {
                     Accept: 'application/json',
                     Authorization: `Bearer ${authToken}`
                 },
+
+                params: queryParams
             }
         );
 

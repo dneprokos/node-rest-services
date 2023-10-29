@@ -10,6 +10,8 @@ const genreProvider = new GenreProvider(); // Create an instance of the GenrePro
 //####Genres endpoints######
   router.get('/', jwtTokenValidation, async (req, res) => {
     const genres = await genreProvider.getAllGenres();
+
+    console.log(`GET ${req.path} - Status Code: ${res.statusCode}`);
     res.send(genres);
   });
   

@@ -13,7 +13,6 @@ async function jwtTokenValidation(req, res, next) {
             }
   
             req.user = user;
-            console.log(user);
             next();
         });
     } else {
@@ -23,7 +22,6 @@ async function jwtTokenValidation(req, res, next) {
 
 async function forbiddenIfNotAdminValidation(req, res, next) {
     const { role } = req.user;
-    console.log(role);
 
     if (role !== 'admin') {
       return res.status(403).send('Your user role cannot perform this operation');

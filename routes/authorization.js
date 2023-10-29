@@ -15,11 +15,11 @@ router.post('/', async (req, res) => {
   try {
     // Filter user from the users array by username and password
     const user = await userProvider.getUser({ username: username, password: password });
-    console.log(user);
     
     if (user) {
       // Generate an access token
       const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret);
+      
       res.json({ accessToken });
     } else {
       res.status(404).send('Invalid credentials.');
