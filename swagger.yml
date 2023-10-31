@@ -7,578 +7,575 @@ info:
 host: localhost:4000
 
 paths:
-    /api/authorization:
-      post: 
-        summary: Get Authorization token by username and password
-        tags:
-            - Authorization
-        operationId: GetAuthenticationByNameAndPassword
-        parameters:
-            - in: query
-              name: username
-              schema:
-                type: string
-              description: Name of the user (Read-only - "test", Admin - "testadmin")
-            - in: query
-              name: password
-              schema:
-                type: string
-              description: Password (Name of the user (Read-only - "testpassword", Admin - "testadminpassword"))
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/AccessToken'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/users:
-      get:
-        summary: Get All users
-        tags:
-            - Users
-        operationId: GetAllUsers
-        security:
-          - bearerAuth: []
-        responses:
-            '200':
-              description: OK
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Users'
-            '401':
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Exception'
-            '403':
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/genres:                
-      get:
-        summary: Get All genres
-        tags:
-            - Genres
-        operationId: GetAllGenres
-        security:
-          - bearerAuth: []
-        responses:
-            '200':
-              description: OK
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Genres'
-            '401':
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Exception' 
-      post:
-        summary: Creates new Genre
-        tags:
-            - Genres
-        operationId: CreateNewGenre
-        security:
-          - bearerAuth: []
-        requestBody:
-          required: true
+  /api/authorization:
+    post:
+      summary: Get Authorization token by username and password
+      tags:
+        - Authorization
+      operationId: GetAuthenticationByNameAndPassword
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          description: Name of the user (Read-only - "test", Admin - "testadmin")
+        - in: query
+          name: password
+          schema:
+            type: string
+          description: Password (Name of the user (Read-only - "testpassword", Admin - "testadminpassword"))
+      responses:
+        "200":
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GenreCreateUpdate'
-              example:
-                name: 'Sci Fi'
-        responses:
-          '201':
-            description: Created
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Genre'
-          '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/genres/bulk:
-      post:
-        summary: Creates new Genres in bulk
-        tags:
-            - Genres
-        operationId: CreateNewGenresInBulk
-        security:
-          - bearerAuth: []
-        requestBody:
-          required: true
+                $ref: "#/components/schemas/AccessToken"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/users:
+    get:
+      summary: Get All users
+      tags:
+        - Users
+      operationId: GetAllUsers
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/genres:
+    get:
+      summary: Get All genres
+      tags:
+        - Genres
+      operationId: GetAllGenres
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genres"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+    post:
+      summary: Creates new Genre
+      tags:
+        - Genres
+      operationId: CreateNewGenre
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenreCreateUpdate"
+            example:
+              name: "Sci Fi"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genre"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/genres/bulk:
+    post:
+      summary: Creates new Genres in bulk
+      tags:
+        - Genres
+      operationId: CreateNewGenresInBulk
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/GenreCreateUpdate"
+            example:
+              - name: "Sci Fi"
+              - name: "Comedy"
+      responses:
+        "201":
+          description: Created
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GenreCreateUpdate'
-              example:
-                - name: 'Sci Fi'
-                - name: 'Comedy'
-        responses:
-          '201':
-            description: Created
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Genre'
-          '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/genres/{id}:
-      get:
-        summary: Get Genre by Id
-        tags:
-          - Genres
-        operationId: GetGenreById
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: integer
-            description: Genre Id 
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: Ok
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Genre'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-      put:
-        summary: Update Genre
-        tags:
-          - Genres
-        operationId: UpdateGenre
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: integer
-            description: Genre Id 
-        security:
-          - bearerAuth: []
-        requestBody:
-          required: true
+                  $ref: "#/components/schemas/Genre"
+        "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GenreCreateUpdate'
-              example:
-                name: 'Comedy'
-        responses:
-          '200':
-            description: Ok
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Genre'
-          '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-      delete:
-        summary: Delete Genre
-        tags:
-          - Genres
-        operationId: DeleteGenre
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: integer
-            description: Genre Id 
-        security:
-          - bearerAuth: []
-        responses:
-          '204':
-            description: No Content
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/genres/search:
-      get:
-        summary: Search Genre
-        tags:
-          - Genres
-        operationId: SearchGenre
-        security:
-          - bearerAuth: []
-        parameters:
-          - in: query
-            name: name
-            required: false
-            schema:
-              type: string
-            description: Genre name
-          - in: query
-            name: page
-            required: false
-            schema:
-              type: integer
-              minimum: 1
-            description: Page number (Min - 1)
-          - in: query
-            name: limit
-            required: false
-            schema:
-              type: integer
-              minimum: 1
-              maximum: 20
-            description: Page limit (Min - 1, Max - 20)
-        responses:
-          '200':
-            description: Ok
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/GenresSearchResponse'
-    /api/movies/{id}:
-      get:
-        summary: Get Movie by Id
-        tags:
-          - Movies
-        operationId: GetMovieById
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: integer
-            description: Movie Id 
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: Ok
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Movie'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-      delete:
-        summary: Delete Movie by Id
-        tags:
-          - Movies
-        operationId: DeleteMovieById
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: integer
-            description: Movie Id 
-        security:
-          - bearerAuth: []
-        responses:
-          '204':
-            description: No Content
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '404':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-    /api/movies:                
-      get:
-        summary: Get movies with a filter
-        tags:
-            - Movies
-        operationId: GetFilteredMovies
-        security:
-          - bearerAuth: []
-        parameters:
-          - in: query
-            name: name
-            schema:
-              type: string
-            description: Movie name
-          - in: query
-            name: release_date
-            schema:
-              type: integer
-            description: Movie release year
-          - in: query
-            name: genre_ids
-            schema:
-              type: string
-            description: Comma-separated genre IDs
-          - in: query
-            name: page
-            schema:
-              type: integer
-            description: Page number
-          - in: query
-            name: limit
-            schema:
-              type: integer
-            description: Page limit
-        responses:
-            '200':
-              description: OK
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/MoviesPagingResponse'
-            '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-            '401':
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Exception'    
-      post:
-        summary: Creates new Movie
-        tags:
-            - Movies
-        operationId: CreateNewMovie
-        security:
-          - bearerAuth: []
-        requestBody:
-          required: true
+                $ref: "#/components/schemas/Exception"
+        "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieCreateUpdate'
-              example:
-                name: 'Movie name'
-                release_date: 1930
-                genre_ids: [1, 2]
-        responses:
-          '201':
-            description: Created
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Movie'
-          '400':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '401':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'
-          '403':
-            content:
-              application/json:
-                schema:
-                    $ref: '#/components/schemas/Exception'                         
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/genres/{id}:
+    get:
+      summary: Get Genre by Id
+      tags:
+        - Genres
+      operationId: GetGenreById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Genre Id
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genre"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+    put:
+      summary: Update Genre
+      tags:
+        - Genres
+      operationId: UpdateGenre
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Genre Id
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenreCreateUpdate"
+            example:
+              name: "Comedy"
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genre"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+    delete:
+      summary: Delete Genre
+      tags:
+        - Genres
+      operationId: DeleteGenre
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Genre Id
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/genres/search:
+    get:
+      summary: Search Genre
+      tags:
+        - Genres
+      operationId: SearchGenre
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          required: false
+          schema:
+            type: string
+          description: Genre name
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: Page number (Min - 1)
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+          description: Page limit (Min - 1, Max - 20)
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenresSearchResponse"
+  /api/movies/{id}:
+    get:
+      summary: Get Movie by Id
+      tags:
+        - Movies
+      operationId: GetMovieById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Movie Id
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+    delete:
+      summary: Delete Movie by Id
+      tags:
+        - Movies
+      operationId: DeleteMovieById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Movie Id
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /api/movies:
+    get:
+      summary: Get movies with a filter
+      tags:
+        - Movies
+      operationId: GetFilteredMovies
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Movie name
+        - in: query
+          name: release_date
+          schema:
+            type: integer
+          description: Movie release year
+        - in: query
+          name: genre_ids
+          schema:
+            type: string
+          description: Comma-separated genre IDs
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Page limit
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoviesPagingResponse"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+    post:
+      summary: Creates new Movie
+      tags:
+        - Movies
+      operationId: CreateNewMovie
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieCreateUpdate"
+            example:
+              name: "Movie name"
+              release_date: 1930
+              genre_ids: [1, 2]
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
 components:
-    schemas:
-        Exception:
-            properties:
-              exception:
-                type: string
-        AccessToken:
-            type: object
-            properties:
-              accessToken:
-                type: string
-                description: Bearer token
-        Genre:
-            type: object
-            properties:
-              id:
-                type: integer
-                uniqueItems: true
-              name:
-                type: string
-        GenreCreateUpdate:
-            type: object
-            properties:
-              name:
-                type: string
-                required: true
-                description: "Name of the genre. (Min: 3 symbols)"
-        Genres:
-            type: array
-            items:
-              $ref: '#/components/schemas/Genre'
-        GenresSearchResponse:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Genres'
-              page_number:
-                type: integer
-              page_limit:
-                type: integer
-              total_results:
-                type: integer
-        Movie:
-            type: object
-            properties:
-              id:
-                type: integer
-                uniqueItems: true
-              name:
-                type: string
-              release_date:
-                type: integer
-              genre_ids:
-                type: array
-                items:
-                  type: integer
-        Movies:
-            type: array
-            items:
-              $ref: '#/components/schemas/Movie'
-        MovieCreateUpdate:
-            type: object
-            properties:
-              name:
-                type: string
-                description: "Movie name. (Min: 3 symbols)"
-              release_date:
-                type: integer
-                description: "Movie release year. (Min: 1930)"
-              genre_ids:
-                type: array
-                items:
-                  type: integer
-                description: "Comma-separated genre IDs. (Should be valid IDs)"
-        MoviesPagingResponse:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movies'
-              page_number:
-                type: integer
-              page_limit:
-                type: integer
-              total_results:
-                type: integer
-        User:
-            type: object
-            properties:
-              id:
-                type: integer
-                uniqueItems: true
-              username:
-                type: string
-              password:
-                type: string
-              role:
-                type: string
-        Users:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        
-    securitySchemes:
-      bearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT       
-        
-          
-  
+  schemas:
+    Exception:
+      properties:
+        exception:
+          type: string
+    AccessToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Bearer token
+    Genre:
+      type: object
+      properties:
+        id:
+          type: integer
+          uniqueItems: true
+        name:
+          type: string
+    GenreCreateUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+          description: "Name of the genre. (Min: 3 symbols)"
+    Genres:
+      type: array
+      items:
+        $ref: "#/components/schemas/Genre"
+    GenresSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Genres"
+        page_number:
+          type: integer
+        page_limit:
+          type: integer
+        total_results:
+          type: integer
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+          uniqueItems: true
+        name:
+          type: string
+        release_date:
+          type: integer
+        genre_ids:
+          type: array
+          items:
+            type: integer
+    Movies:
+      type: array
+      items:
+        $ref: "#/components/schemas/Movie"
+    MovieCreateUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Movie name. (Min: 3 symbols)"
+        release_date:
+          type: integer
+          description: "Movie release year. (Min: 1930)"
+        genre_ids:
+          type: array
+          items:
+            type: integer
+          description: "Comma-separated genre IDs. (Should be valid IDs)"
+    MoviesPagingResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Movies"
+        page_number:
+          type: integer
+        page_limit:
+          type: integer
+        total_results:
+          type: integer
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          uniqueItems: true
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+    Users:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
