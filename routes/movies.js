@@ -33,7 +33,8 @@ router.get('/:id', jwtTokenValidation, async (req, res) => {
 router.post('/', jwtTokenValidation, forbiddenIfNotAdminValidation, async (req, res) => {
     // Validate the request body
     const { error } = validateProperties(req.body.name, req.body.release_date, req.body.genre_ids);
-    if (error) res.status(400).send(error.details[0].message);
+    if (error) 
+      return res.status(400).send(error.details[0].message);
 
     // Validate genre_ids using genre-provider
     const invalidGenreIds = await genreProvider.getInvalidGenreIds(req.body.genre_ids);
