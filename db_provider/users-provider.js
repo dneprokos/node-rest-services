@@ -1,7 +1,7 @@
 const User = require("../models/user-model");
 const { hashPassword } = require("../utils/passwordUtils");
 const userService = require('../mongo/services/usersMongoService.js');
-const BaseProvider = require("./base-provider"); // Import the 'BaseProvider' class
+const BaseProvider = require("./_base-provider"); // Import the 'BaseProvider' class
 
 const users = [
     new User(1, "testadmin", "testadminpassword", "admin"),

@@ -1,6 +1,6 @@
 const Movie = require("../models/movie-model");
 const movieService = require('../mongo/services/moviesMongoService.js');
-const BaseProvider = require('./base-provider'); // Import the 'BaseProvider' class
+const BaseProvider = require('./_base-provider'); // Import the 'BaseProvider' class
 
 const movies = [
     new Movie(1, "The Matrix", 1999, [1, 4]),

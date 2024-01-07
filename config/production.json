@@ -3,7 +3,7 @@
     "mail": {
         "host": "prod-mail-server"
     },
-    "useDatabase": true,
+    "useDatabase": false,
     "mongoDB": {
         "uri": "mongodb://localhost:27017/MoviesDb",
         "options": {}

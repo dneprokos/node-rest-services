@@ -1,6 +1,6 @@
 const Genre = require('../models/genre-model.js');
 const genreService = require('../mongo/services/genresMongoService.js');
-const BaseProvider = require('./base-provider.js');
+const BaseProvider = require('./_base-provider.js');
 
 const genresData = [
     new Genre(1, 'Action'),
