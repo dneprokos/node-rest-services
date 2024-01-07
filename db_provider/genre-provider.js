@@ -1,6 +1,6 @@
 const Genre = require('../models/genre-model.js');
-const config = require('config');
 const genreService = require('../mongo/services/genresMongoService.js');
+const BaseProvider = require('./base-provider.js');
 
 const genresData = [
     new Genre(1, 'Action'),
@@ -16,9 +16,9 @@ const genresData = [
     new Genre(11, 'Western')
 ];
 
-class GenreProvider {
+class GenreProvider extends BaseProvider {
     constructor() {
-      this.useDatabase = config.get('useDatabase');
+      super();
     }
 
     /**
