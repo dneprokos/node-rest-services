@@ -13,6 +13,26 @@ Run 'node index.js' in the Command Line or RunMe.bat if you are running it on Wi
 
 Now you can use test endpoints
 
+# Use of the real MongoDb
+By default this project works with hardcoded list of data that exist only during the session. Anyway, there is possibility to enable connection to real Mongo database
+
+## Precondition
+1. Install MongoDb - https://www.mongodb.com/docs/manual/installation/
+2. Create a server on your local machine. In the first stage, I installed it as a server with no username or password.
+3. Create a database with a proper name. It can be any name, but at the moment in the configuration file it is equal to - "MoviesDb".
+4. (Optional) There may be JSON files in the Mongo-import_data folder that you can import to get initial data.
+
+## Change of the configuration
+1. Go to config folder and update required configuration:
+a) Update "mongoDB.uri". 
+b) Set "useDatabase" to true
+
+Note: I did a setup without authorization, but it maybe changed in the future. If you want to change, you may need to do it inside of the index.js file
+
+![Report Image](/images/Configuration.png)
+
+Now you need to return to "How to run" step and start application
+
 # Swagger
 Swagger is available after node app is started by the following path: http://localhost:3000/api-docs/
 
