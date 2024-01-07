@@ -1,5 +1,10 @@
 {
     "name": "Node REST services",
     "port": 5000,
-    "open_swagger": true
+    "open_swagger": true,
+    "useDatabase": false,
+    "mongoDB": {
+        "uri": "mongodb://localhost:27017/MoviesDb",
+        "options": {}
+    }
 }

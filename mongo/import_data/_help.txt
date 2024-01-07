@@ -1,0 +1,1 @@
+This folder contains JSON files with predefined data. You can use it to import in MongoDB

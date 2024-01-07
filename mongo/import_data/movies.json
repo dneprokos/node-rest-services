@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "title": "The Matrix",
+        "year": 1999,
+        "genre_ids": [
+            1,
+            4
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Titanic",
+        "year": 1997,
+        "genre_ids": [
+            5,
+            6
+        ]
+    },
+    {
+        "id": 3,
+        "title": "The Avengers",
+        "year": 2012,
+        "genre_ids": [
+            7
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Serenity",
+        "year": 2005,
+        "genre_ids": [
+            8
+        ]
+    },
+    {
+        "id": 5,
+        "title": "The Mummy",
+        "year": 1999,
+        "genre_ids": [
+            9,
+            10,
+            1,
+            2
+        ]
+    }
+]
