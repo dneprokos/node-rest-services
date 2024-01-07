@@ -2,5 +2,10 @@
     "name": "Node REST services - Development",
     "mail": {
         "host": "dev-mail-server"
+    },
+    "useDatabase": true,
+    "mongoDB": {
+        "uri": "mongodb://localhost:27017/MoviesDb",
+        "options": {}
     }
 }

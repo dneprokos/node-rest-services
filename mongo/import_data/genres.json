@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "name": "Action"
+    },
+    {
+        "id": 2,
+        "name": "Horror"
+    },
+    {
+        "id": 3,
+        "name": "Romance"
+    },
+    {
+        "id": 4,
+        "name": "Science Fiction"
+    },
+    {
+        "id": 5,
+        "name": "Disaster Film"
+    },
+    {
+        "id": 6,
+        "name": "Epic Romance"
+    },
+    {
+        "id": 7,
+        "name": "Superhero Film"
+    },
+    {
+        "id": 8,
+        "name": "Space Western"
+    },
+    {
+        "id": 9,
+        "name": "Comedy"
+    },
+    {
+        "id": 10,
+        "name": "Adventure"
+    },
+    {
+        "id": 11,
+        "name": "Western"
+    }
+]
